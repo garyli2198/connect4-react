@@ -11,34 +11,39 @@ class Board extends Component {
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]],
-      player: 'red',
+      player: 'Red',
     }
+    this.initialState = this.state;
+  }
+
+  restart(){
+    window.location.reload();
   }
 
   update_col(col) {
     let copyArray = this.state.board.slice();
     for (let r = 5; r >= 0; r--) {
       if (copyArray[r][col] === 0) {
-        copyArray[r][col] = (this.state.player === 'red') ? 1 : 2;
-        this.setState({ board: copyArray, player: (this.state.player === 'red') ? 'black' : 'red' });
+        copyArray[r][col] = (this.state.player === 'Red') ? 1 : 2;
+        this.setState({ board: copyArray, player: (this.state.player === 'Red') ? 'Black' : 'Red' });
         return;
       }
     }
   }
 
   //helper function
-  check(i, j, k, l) {
-    return i !== 0 && i === j && i === k && i === l;
+  check(a, b, c, d) {
+    return a !== 0 && a === b && a === c && a === d;
   }
-  
+
 
   checkWinner(board) {
-    
+
     //vertical victories
-    for (let c = 0; c < 6; c++) {
-      for (let r = 0; r < 4; r++) {
-        if (this.check(board[c][r], board[c][r + 1], board[c][r + 2], board[c][r + 3])) {
-          if (board[c][r] === 1) {
+    for (let c = 0; c < 7; c++) {
+      for (let r = 0; r < 3; r++) {
+        if (this.check(board[r][c], board[r + 1][c], board[r + 2][c], board[r + 3][c])) {
+          if (board[r][c] === 1) {
             return "Red wins!"
           } else {
             return "Black wins!"
@@ -50,9 +55,9 @@ class Board extends Component {
 
     //horizontal victories
     for (let r = 0; r < 6; r++) {
-      for (let c = 0; c < 3; c++) {
-        if (this.check(board[c][r], board[c + 1][r], board[c + 2][r], board[c + 3][r])) {
-          if (board[c][r] === 1) {
+      for (let c = 0; c < 4; c++) {
+        if (this.check(board[r][c], board[r][c + 1], board[r][c + 2], board[r][c + 3])) {
+          if (board[r][c] === 1) {
             return "Red wins!"
           } else {
             return "Black wins!"
@@ -63,9 +68,9 @@ class Board extends Component {
 
     //diagonal right victories
     for (let r = 0; r < 3; r++) {
-      for (let c = 0; c < 3; c++) {
-        if (this.check(board[c][r], board[c + 1][r + 1], board[c + 2][r + 2], board[c + 3][r + 3])) {
-          if (board[c][r] === 1) {
+      for (let c = 0; c < 4; c++) {
+        if (this.check(board[r][c], board[r + 1][c + 1], board[r + 2][c + 2], board[r + 3][c + 3])) {
+          if (board[r][c] === 1) {
             return "Red wins!"
           } else {
             return "Black wins!"
@@ -75,10 +80,10 @@ class Board extends Component {
     }
 
     //diagonal left victories
-    for (let r = 0; r < 4; r++) {
-      for (let c = 3; c < 6; c++) {
-        if (this.check(board[c][r], board[c - 1][r + 1], board[c - 2][r + 2], board[c - 3][r + 3])) {
-          if (board[c][r] === 1) {
+    for (let r = 3; r < 6; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.check(board[r][c], board[r - 1][c + 1], board[r - 2][c + 2], board[r - 3][c + 3])) {
+          if (board[r][c] === 1) {
             return "Red wins!"
           } else {
             return "Black wins!"
@@ -98,25 +103,37 @@ class Board extends Component {
       for (let col = 0; col < board[row].length; col++) {
         let contender = <div key={(row.toString() + ' ' + col.toString())} onClick={() => { this.update_col(col) }} className="null_tile tile"></div>;
         if (board[row][col] === 1) {
-          contender = <div key={(row.toString() + ' ' + col.toString())} onClick={() => { this.update_col(col) }} className="red_tile tile"></div>
+          contender = <div key={(row.toString() + ' ' + col.toString())} onClick={() => { this.update_col(col) }} className="red_tile tile fadeIn"></div>
         } else if (board[row][col] === 2) {
-          contender = <div key={(row.toString() + ' ' + col.toString())} onClick={() => { this.update_col(col) }} className="black_tile tile"></div>
+          contender = <div key={(row.toString() + ' ' + col.toString())} onClick={() => { this.update_col(col) }} className="black_tile tile fadeIn"></div>
         }
         rows.push(contender);
       }
     }
-    console.log(board)
-    let winner = board === undefined ? "" : this.checkWinner(board);
-    if (winner !== "") {
+
+
+    let win = this.checkWinner(board);
+    if (win !== "") {
       return (
         <div>
-          {winner}
+          <div id="winner">
+            {win}
+          </div>
+          <div id="table">
+            {rows}
+          </div>
+          <button id="restart" onClick={this.restart}>Restart</button>
         </div>
       )
     }
     return (
-      <div id="table">
-        {rows}
+      <div>
+        <div id="turn">
+          {this.state.player}'s turn
+        </div>
+        <div id="table">
+          {rows}
+        </div>
       </div>
     )
   }
