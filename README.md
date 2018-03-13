@@ -3,4 +3,4 @@ The connect 4 web app is made with ReactJS. I used React because it was the easi
 # How To Run
 After downloading the app , in the project direcotry run **npm install** followed by **npm start** to view the page on your localhost.
 # Demo
-The app is also hosted online at 
+The app is also hosted online at https://garyli2198.github.io/connect4-react/
