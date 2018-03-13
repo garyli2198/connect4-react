@@ -12,6 +12,7 @@ class Board extends Component {
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]],
       player: 'Red',
+      winner: ''
     }
     this.initialState = this.state;
   }
@@ -21,12 +22,19 @@ class Board extends Component {
   }
 
   update_col(col) {
-    let copyArray = this.state.board.slice();
-    for (let r = 5; r >= 0; r--) {
-      if (copyArray[r][col] === 0) {
-        copyArray[r][col] = (this.state.player === 'Red') ? 1 : 2;
-        this.setState({ board: copyArray, player: (this.state.player === 'Red') ? 'Black' : 'Red' });
-        return;
+    if(this.state.winner === ''){
+      let copyArray = this.state.board.slice();
+      for (let r = 5; r >= 0; r--) {
+        if (copyArray[r][col] === 0) {
+          copyArray[r][col] = (this.state.player === 'Red') ? 1 : 2;
+          let win = this.checkWinner(this.state.board);
+          if(win !== ''){
+            this.setState({winner:win});
+            return;
+          }
+          this.setState({ board: copyArray, player: (this.state.player === 'Red') ? 'Black' : 'Red' });
+          return;
+        }
       }
     }
   }
@@ -112,12 +120,11 @@ class Board extends Component {
     }
 
 
-    let win = this.checkWinner(board);
-    if (win !== "") {
+    if (this.state.winner !== "") {
       return (
         <div>
           <div id="winner">
-            {win}
+            {this.state.winner}
           </div>
           <div id="table">
             {rows}
